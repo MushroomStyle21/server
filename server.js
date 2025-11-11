@@ -335,16 +335,3 @@ app.get('/health', (req, res) => {
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
-package.json (Railway)
-{
-  "name": "slither-server",
-  "version": "1.0.0",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "ws": "^8.14.2",
-    "express": "^4.18.2"
-  }
-}
