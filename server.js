@@ -78,7 +78,6 @@ class GameRoom {
           value: 0.10
         });
       }
-      console.log(`💰 ${playerId} dropped $${player.money.toFixed(2)}`);
     }
     
     this.players.delete(playerId);
@@ -87,7 +86,6 @@ class GameRoom {
     if (this.players.size === 0) {
       this.stopGameLoop();
       rooms.delete(this.roomId);
-      console.log(`🗑️ Room ${this.roomId} deleted`);
     }
   }
 
@@ -100,11 +98,10 @@ class GameRoom {
   }
 
   startGameLoop() {
-    console.log(`🎮 Game loop started for ${this.roomId}`);
     this.gameLoop = setInterval(() => {
       this.updateGame();
       this.broadcastGameState();
-    }, 1000 / 60); // 60 FPS
+    }, 1000 / 60);
   }
 
   stopGameLoop() {
@@ -119,7 +116,6 @@ class GameRoom {
       if (!player.alive) return;
 
       const speed = player.boosting ? BOOST_SPEED : BASE_SPEED;
-      
       const head = player.snake[0];
       const newHead = {
         x: head.x + Math.cos(player.direction) * speed,
@@ -134,13 +130,11 @@ class GameRoom {
       player.snake.unshift(newHead);
       player.snake.pop();
 
-      // Food
       this.food = this.food.filter(food => {
         const dx = newHead.x - food.x;
         const dy = newHead.y - food.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
         
-        if (dist < SEGMENT_RADIUS + food.size) {
+        if (Math.sqrt(dx * dx + dy * dy) < SEGMENT_RADIUS + food.size) {
           player.snake.push({ x: newHead.x, y: newHead.y });
           player.score += 1;
           
@@ -156,13 +150,11 @@ class GameRoom {
         return true;
       });
 
-      // Money
       this.moneyBalls = this.moneyBalls.filter(ball => {
         const dx = newHead.x - ball.x;
         const dy = newHead.y - ball.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
         
-        if (dist < SEGMENT_RADIUS + ball.size) {
+        if (Math.sqrt(dx * dx + dy * dy) < SEGMENT_RADIUS + ball.size) {
           player.money += ball.value;
           player.score += 5;
           return false;
@@ -170,7 +162,6 @@ class GameRoom {
         return true;
       });
 
-      // Snake collision
       this.players.forEach((other) => {
         if (other.id === player.id || !other.alive) return;
 
@@ -193,7 +184,6 @@ class GameRoom {
                   value: 0.10
                 });
               }
-              console.log(`💀 ${player.id} killed - $${player.money.toFixed(2)} dropped`);
             }
           }
         });
